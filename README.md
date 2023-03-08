@@ -23,7 +23,7 @@ override func viewDidLoad() {
     }
 ```
 
-```sql
+```swift
 class APIManager {
     static let shared = APIManager()
     
