@@ -26,10 +26,12 @@ override func viewDidLoad() {
 ```swift
 class APIManager {
     static let shared = APIManager()
+    let host = "localhost"
+    let port = 8080
     
     func getNews(SQLQuery: String, completion: @escaping (String?, String?) -> Void) {
         let SQLQueryInCorrectForm = SQLQuery.replacingOccurrences(of: " ", with: "%20").replacingOccurrences(of: "\n", with: "%20")
-        let urlString = "http://localhost:8000/database/\(SQLQueryInCorrectForm)"
+        let urlString = "http://\(host):\(port)/database/\(SQLQueryInCorrectForm)"
         guard let url = URL(string: urlString) else {
             completion(nil, "Uncorrected url")
             return
