@@ -1,3 +1,25 @@
+/* Старая реализация
+const http = require("http");
+const host = 'localhost';
+const port = 8000;
+
+const handler = (req, res) => {
+    /// req - http-запрос, res - http-ответ.
+    res.writeHead(200);
+    res.end('Курс ПСП такой крутой!');
+
+};
+
+const server = http.createServer(handler);
+
+/// ``` node server.js ``` - запускает сервер
+server.listen(port, host, () => {
+    console.log(`Сервер запущен по адресу http://${host}:${port}`);
+});
+*/
+const {postgresPort} = require('./config.js')
+
+const {Pool} = require('pg')
 const express = require('express');
 const fs = require("fs");
 const path = require("path");
@@ -37,9 +59,22 @@ app.get('/stocks/:id', (req, res) => {
 });
 
 app.get('/database/:command', (req, res) => {
-    const commendForSQL = req.params.command;
-    console.log('Тут бы я сделал запрос к sql: ', commendForSQL);
-    res.send(`Тут бы был результат SQL запроса: ${commendForSQL}`);
+    const commandForSQL = req.params.command;
+    const pool = new Pool({
+        user: postgresPort.user_pg,
+        host: postgresPort.host_pg,
+        database: postgresPort.db_name_pg,
+        password: postgresPort.password_pg,
+        port: postgresPort.port_pg,
+    });
+    pool.query(commandForSQL, (err, dbData) => {
+        if (err) {
+            res.send(err);
+        } else {
+            res.send(dbData);
+        }
+        pool.end();
+    });
 })
 
 app.listen(port, host, () => {
