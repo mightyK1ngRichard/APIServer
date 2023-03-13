@@ -7,20 +7,22 @@
 ```swift
 override func viewDidLoad() {
         super.viewDidLoad()
-        // SQL запрос.
         let query = """
         SELECT *
         FROM coordinates;
         """
-        APIManager.shared.getNews(SQLQuery: query) { data, error in
+        APIManager.shared.getNews(SQLQuery: query) {[weak self] data, error in
+            guard let self = self else { return }
             guard let data = data else {
                 // ... Можно добавить какой-то паттерн вывод лейблов.
-                print(error!)
+                print("ERROR: ", error!)
                 return
             }
-            print(data)
+            
+            DispatchQueue.main.async{
+                // ... work with the data here.
+            }
         }
-    }
 ```
 
 ```swift
